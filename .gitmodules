@@ -1,0 +1,3 @@
+[submodule "libs/webhostinghub-glyphs"]
+	path = libs/webhostinghub-glyphs
+	url = git@github.com:whhglyphs/webhostinghub-glyphs.git

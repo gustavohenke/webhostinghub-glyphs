@@ -20,6 +20,7 @@ svg = svg.replace( /glyph-name="(.+?)" unicode="(.+?)"/g, "glyph-name=\"$2\" uni
 console.log( "Fixed glyph names" );
 
 xml2js.parseString( svg, function( err, result ) {
+    var json;
     var cfgFile = path.join( __dirname, "config.json" );
     var font = result.svg.defs[ 0 ].font[ 0 ];
     var fontFace = font[ "font-face" ][ 0 ].$;
@@ -57,14 +58,14 @@ xml2js.parseString( svg, function( err, result ) {
     });
 
     // Write the config file
-    var str = JSON.stringify( fontelloCfg );
-    fs.writeFileSync( cfgFile, str );
+    json = JSON.stringify( fontelloCfg );
+    fs.writeFileSync( cfgFile, json );
     console.log( "Created Fontello config file" );
 
     restler.post( FONTELLO_HOST, {
         multipart: true,
         data: {
-            config: restler.file( cfgFile, "config.json", str.length, null, "application/json" )
+            config: restler.file( cfgFile, "config.json", json.length, null, "application/json" )
         }
     }).on( "complete", function( id ) {
         // Remove config.json file

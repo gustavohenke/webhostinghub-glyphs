@@ -8,15 +8,15 @@ var path = require( "path" );
 var fs = require( "fs" );
 var xml2js = require( "xml2js" );
 var restler = require( "restler" );
-var unzip = require( "unzip" );
-var ncp = require( "ncp" ).ncp;
+var AdmZip = require( "adm-zip" );
+var wrench = require( "wrench" );
 
 // Initialize fontello config
 var fontelloCfg = {};
 
 // Replace uni* glyph-names with proper names from unicode attribute
 var svg = fs.readFileSync( path.resolve( __dirname, "../libs/webhostinghub-glyphs/WebHostingHub-Glyphs.svg" ), "utf8" );
-svg = svg.replace( /glyph-name="uni(.+?)" unicode="(.+?)"/g, "glyph-name=\"$2\" unicode=\"$2\"" );
+svg = svg.replace( /glyph-name="(.+?)" unicode="(.+?)"/g, "glyph-name=\"$2\" unicode=\"$2\"" );
 console.log( "Fixed glyph names" );
 
 xml2js.parseString( svg, function( err, result ) {
@@ -59,7 +59,7 @@ xml2js.parseString( svg, function( err, result ) {
     // Write the config file
     var str = JSON.stringify( fontelloCfg );
     fs.writeFileSync( cfgFile, str );
-    console.log( "Created config file" );
+    console.log( "Created Fontello config file" );
 
     restler.post( FONTELLO_HOST, {
         multipart: true,
@@ -69,12 +69,13 @@ xml2js.parseString( svg, function( err, result ) {
     }).on( "complete", function( id ) {
         // Remove config.json file
         fs.unlinkSync( cfgFile );
-        console.log( "Session ID: " + id );
+        console.log( "Fontello Session initiated, ID: " + id );
 
         restler.get( FONTELLO_HOST + id + "/get", {
             // Decoding must be buffer in order to zip download correctly
             decoding: "buffer"
         }).on( "complete", function( zip ) {
+            var dir;
             var zipOutput = path.join( __dirname, "font" );
 
             // Create the zip file locally
@@ -82,30 +83,27 @@ xml2js.parseString( svg, function( err, result ) {
             fs.writeFileSync( zipFile, zip );
             console.log( "Downloaded and saved zip file" );
 
-            // Pipe zip contents to unzip
-            fs.createReadStream( zipFile ).pipe( unzip.Extract({
-                path: zipOutput
-            })).on( "finish", function() {
-                var dir = fs.readdirSync( zipOutput );
-                var cb = (function() {
-                    var count = 0;
+            // Unzip contents and delete zip file
+            new AdmZip( zipFile ).extractAllTo( zipOutput, true );
+            fs.unlinkSync( zipFile );
 
-                    return function() {
-                        count++;
-                        if ( count === 2 ) {
-                            fs.unlinkSync( zipOutput );
-                            console.log( "Finished installation." );
-                        }
-                    };
-                })();
+            // Get the fontello directory
+            dir = fs.readdirSync( zipOutput );
+            dir = path.join( zipOutput, dir[ 0 ] );
 
-                dir = path.join( zipOutput, dir[ 0 ] );
-                fs.unlinkSync( zipFile );
+            // Copy things
+            console.log( "Copying files" );
+            wrench.copyDirSyncRecursive(
+                path.join( dir, "font" ),
+                path.resolve( __dirname, "../font" )
+            );
+            wrench.copyDirSyncRecursive(
+                path.join( dir, "css" ),
+                path.resolve( __dirname, "../css" )
+            );
 
-                // Copy things
-                ncp( path.join( dir, "font" ), path.resolve( __dirname, "../font" ), cb );
-                ncp( path.join( dir, "css" ), path.resolve( __dirname, "../css" ), cb );
-            });
+            wrench.rmdirSyncRecursive( zipOutput );
+            console.log( "Finished installation." );
         });
     });
 });

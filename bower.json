@@ -1,0 +1,12 @@
+{
+    "name": "webhostinghub-glyphs",
+    "description": "WebHostingHub Glyphs Bower repository",
+    "version": "0.0.1",
+    "license": "MIT",
+    "ignore": [
+        ".*",
+        "node_modules",
+        "libs",
+        "build"
+    ]
+}

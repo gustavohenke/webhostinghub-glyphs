@@ -16,8 +16,6 @@ var fontelloCfg = {};
 
 // Replace uni* glyph-names with proper names from unicode attribute
 var svg = fs.readFileSync( path.resolve( __dirname, "../libs/webhostinghub-glyphs/WebHostingHub-Glyphs.svg" ), "utf8" );
-svg = svg.replace( /glyph-name="(.+?)" unicode="(.+?)"/g, "glyph-name=\"$2\" unicode=\"$2\"" );
-console.log( "Fixed glyph names" );
 
 xml2js.parseString( svg, function( err, result ) {
     var json;
@@ -34,27 +32,8 @@ xml2js.parseString( svg, function( err, result ) {
     fontelloCfg.css_prefix_text = "icon-";
     fontelloCfg.glyphs = [];
 
-    font.glyph.forEach(function( glyph, i ) {
-        glyph = glyph.$;
-
-        // Has SVG path?
-        if ( !glyph.d ) {
-            return;
-        }
-
-        fontelloCfg.glyphs.push({
-            css: glyph[ "glyph-name" ],
-            src: "custom_icons",
-            code: unicodeStart + i,
-            selected: true,
-            svg: {
-                path: glyph.d,
-                width: 1000 // FIXME
-            },
-            search: [
-                glyph[ "glyph-name" ]
-            ]
-        });
+    fontelloCfg.glyphs = font.glyph.map( getGlyphParser( unicodeStart ) ).filter(function( glyph ) {
+        return glyph;
     });
 
     // Write the config file
@@ -96,11 +75,13 @@ xml2js.parseString( svg, function( err, result ) {
             console.log( "Copying files" );
             wrench.copyDirSyncRecursive(
                 path.join( dir, "font" ),
-                path.resolve( __dirname, "../font" )
+                path.resolve( __dirname, "../font" ),
+                { forceDelete: true }
             );
             wrench.copyDirSyncRecursive(
                 path.join( dir, "css" ),
-                path.resolve( __dirname, "../css" )
+                path.resolve( __dirname, "../css" ),
+                { forceDelete: true }
             );
 
             wrench.rmdirSyncRecursive( zipOutput );
@@ -108,3 +89,86 @@ xml2js.parseString( svg, function( err, result ) {
         });
     });
 });
+
+// -------------------------------------------------------------------------------------------------
+
+/**
+ * Read a file passed via argv and return selected icons.
+ * If the file does not exist, or the format is unsupported, no icon is selected.
+ *
+ * @returns {String[]|void}
+ */
+function getSelectedIcons() {
+    var selected, file, ext;
+
+    // If there's more than 2 argvs (node script.js), we'll slice it and try to read as a file
+    if ( process.argv.length > 2 ) {
+        file = process.argv[ 2 ];
+        ext = file.split( "." ).pop().toLowerCase();
+
+        try {
+            selected = fs.readFileSync( path.resolve( process.cwd(), file ), "utf8" );
+            if ( ext === "txt" ) {
+                selected = selected.split( "\n" ).map(function( ln ) {
+                    return ln.trim();
+                });
+            } else if ( ext === "json" ) {
+                selected = JSON.parse( selected );
+                selected = Array.isArray( selected ) ? selected : null;
+            } else {
+                selected = null;
+                console.log( "Unsupported file type: " + ext );
+            }
+        } catch ( e ) {}
+    }
+
+    return selected;
+}
+
+/**
+ * Return a parser for glyphs
+ *
+ * @param   {Number} unicodeStart   The unicode char to start from
+ * @returns {Function}
+ */
+function getGlyphParser( unicodeStart ) {
+    // Init externally selected icons
+    // This will be used to filter out the icons by their name
+    var selected = getSelectedIcons();
+    selected = selected && selected.length ? selected : null;
+
+    if ( selected ) {
+        console.log( "%d selected icons", selected.length );
+    }
+
+    return function parseGlyphObject( glyph, i ) {
+        var name;
+
+        glyph = glyph.$;
+
+        // Has SVG path?
+        if ( !glyph.d ) {
+            return;
+        }
+
+        // Uses glyph-name, unless it's so stupid.
+        name = glyph[ "glyph-name" ];
+        if ( /^uni[a-f0-9]{4}$/.test( name ) || name.indexOf( "NameMe" ) > -1 ) {
+            name = glyph.unicode;
+        }
+
+        return {
+            css: name,
+            src: "custom_icons",
+            code: unicodeStart + i,
+            selected: !( selected && selected.indexOf( name ) === -1 ),
+            svg: {
+                path: glyph.d,
+                width: 1000 // FIXME
+            },
+            search: [
+                name
+            ]
+        };
+    };
+}

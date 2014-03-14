@@ -13,6 +13,10 @@
         "xml2js": "0.4.1",
         "wrench": "1.5.8"
     },
+    "bin": {
+        "whhglyphs": "build/script.js",
+        "webhostinghub-glyphs": "build/script.js"
+    },
     "scripts": {
         "start": "node build/script.js"
     }

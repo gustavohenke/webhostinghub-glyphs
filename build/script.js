@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 "use strict";
 
 // Constants
@@ -75,12 +76,12 @@ xml2js.parseString( svg, function( err, result ) {
             console.log( "Copying files" );
             wrench.copyDirSyncRecursive(
                 path.join( dir, "font" ),
-                path.resolve( __dirname, "../font" ),
+                path.resolve( process.cwd(), "font" ),
                 { forceDelete: true }
             );
             wrench.copyDirSyncRecursive(
                 path.join( dir, "css" ),
-                path.resolve( __dirname, "../css" ),
+                path.resolve( process.cwd(), "css" ),
                 { forceDelete: true }
             );
 

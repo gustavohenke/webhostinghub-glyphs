@@ -1,6 +1,6 @@
 {
     "name": "webhostinghub-glyphs",
-    "description": "WebHostingHub Glyphs Bower repository",
+    "description": "Bower repository and a Node.js customizer/builder for the iconic font WebHostingHub Glyphs",
     "version": "0.0.2",
     "repository": {
         "type": "git",

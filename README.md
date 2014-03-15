@@ -1,5 +1,5 @@
 # WebHostingHub Glyphs Bower repository
-This is a Bower repository for [WebHostingHub Glyphs](http://webhostinghub.com/glyphs).
+Bower repository and a Node.js customizer/builder for the iconic font [WebHostingHub Glyphs](http://webhostinghub.com/glyphs).
 
 ## Install
 The repository is installable via Bower (d'oh!):

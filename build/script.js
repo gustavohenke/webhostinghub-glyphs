@@ -15,7 +15,7 @@ var wrench = require( "wrench" );
 // Initialize fontello config
 var fontelloCfg = {};
 
-// Replace uni* glyph-names with proper names from unicode attribute
+// Read SVG contents and parse it
 var svg = fs.readFileSync( path.resolve( __dirname, "../libs/webhostinghub-glyphs/WebHostingHub-Glyphs.svg" ), "utf8" );
 
 xml2js.parseString( svg, function( err, result ) {

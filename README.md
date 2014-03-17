@@ -1,5 +1,7 @@
-# WebHostingHub Glyphs Bower repository
+# WebHostingHub Glyphs customizer
 Bower repository and a Node.js customizer/builder for the iconic font [WebHostingHub Glyphs](http://webhostinghub.com/glyphs).
+
+[![Dependency Status](https://david-dm.org/gustavohenke/webhostinghub-glyphs.png?theme=shields.io)](https://david-dm.org/gustavohenke/webhostinghub-glyphs)
 
 ## Install
 The repository is installable via Bower (d'oh!):

@@ -18,13 +18,15 @@ var fontelloCfg = {};
 // Read SVG contents and parse it
 var svg = fs.readFileSync( path.resolve( __dirname, "../libs/webhostinghub-glyphs/WebHostingHub-Glyphs.svg" ), "utf8" );
 
+// Fix uni* glyph names
+svg = svg.replace( /glyph-name="uni[a-f0-9]{4}" unicode="(.+?)"/gi, "glyph-name=\"$1\" unicode=\"$1\"" );
+
 xml2js.parseString( svg, function( err, result ) {
     var json;
     var cfgFile = path.join( __dirname, "config.json" );
     var font = result.svg.defs[ 0 ].font[ 0 ];
     var fontFace = font[ "font-face" ][ 0 ].$;
-    var unicodeRange = fontFace[ "unicode-range" ].replace( "U+", "" ).split( "-" );
-    var unicodeStart = parseInt( "0x" + unicodeRange[ 0 ], 16 );
+    var unicodeStart = parseInt( "0xE000", 16 );
 
     fontelloCfg.name = "webhostinghub-glyphs";
     fontelloCfg.ascent = +fontFace[ "ascent" ];

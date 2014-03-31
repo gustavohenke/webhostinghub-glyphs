@@ -50,9 +50,16 @@ xml2js.parseString( svg, function( err, result ) {
         data: {
             config: restler.file( cfgFile, "config.json", json.length, null, "application/json" )
         }
-    }).on( "complete", function( id ) {
+    }).on( "complete", function( id, response ) {
         // Remove config.json file
         fs.unlinkSync( cfgFile );
+
+        // Not a succesful request?
+        if ( response.statusCode >= 400 ) {
+            console.error( "ERROR! " + id );
+            return process.exit( 1 );
+        }
+
         console.log( "Fontello Session initiated, ID: " + id );
 
         restler.get( FONTELLO_HOST + id + "/get", {

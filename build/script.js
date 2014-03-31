@@ -10,7 +10,9 @@ var fs = require( "fs" );
 var xml2js = require( "xml2js" );
 var restler = require( "restler" );
 var AdmZip = require( "adm-zip" );
+var SvgPath = require( "svgpath" );
 var wrench = require( "wrench" );
+var stripJsonComments = require( "strip-json-comments" );
 
 // Initialize fontello config
 var fontelloCfg = {};
@@ -33,9 +35,8 @@ xml2js.parseString( svg, function( err, result ) {
     fontelloCfg.units_per_em = +fontFace[ "units-per-em" ];
     fontelloCfg.css_use_suffix = false;
     fontelloCfg.css_prefix_text = "icon-";
-    fontelloCfg.glyphs = [];
-
-    fontelloCfg.glyphs = font.glyph.map( getGlyphParser( unicodeStart ) ).filter(function( glyph ) {
+    fontelloCfg.hinting = true;
+    fontelloCfg.glyphs = font.glyph.map( getGlyphParser( fontFace, unicodeStart ) ).filter(function( glyph ) {
         return glyph;
     });
 
@@ -102,30 +103,49 @@ xml2js.parseString( svg, function( err, result ) {
  * @returns {String[]|void}
  */
 function getSelectedIcons() {
-    var selected, file, ext;
+    var ret, content, file, ext;
 
     // If there's more than 2 argvs (node script.js), we'll slice it and try to read as a file
     if ( process.argv.length > 2 ) {
         file = process.argv[ 2 ];
         ext = file.split( "." ).pop().toLowerCase();
 
+        ret = {};
+
         try {
-            selected = fs.readFileSync( path.resolve( process.cwd(), file ), "utf8" );
+            content = fs.readFileSync( path.resolve( process.cwd(), file ), "utf8" );
             if ( ext === "txt" ) {
-                selected = selected.split( "\n" ).map(function( ln ) {
-                    return ln.trim();
+                content = content.split( "\n" ).map(function( ln ) {
+                    // Trim and split by spaces each line.
+                    // 1st item will be the original name, and the 2nd item will be the new name
+                    ln = ln.trim().split( /\s+/ );
+                    return ln;
                 });
             } else if ( ext === "json" ) {
-                selected = JSON.parse( selected );
-                selected = Array.isArray( selected ) ? selected : null;
+                content = JSON.parse( stripJsonComments( content ) );
+
+                if ( !Array.isArray( content ) ) {
+                    // We'll use keys as original name, and values as renamed icons
+                    content = Object.keys( content ).map(function( key ) {
+                        return [ key, content[ key ] ];
+                    });
+                }
             } else {
-                selected = null;
+                content = [];
                 console.log( "Unsupported file type: " + ext );
             }
+
+            content.forEach(function( item ) {
+                if ( typeof item === "string" ) {
+                    item = [ item, item ];
+                }
+
+                ret[ item[ 0 ] ] = item[ 1 ] || item[ 0 ];
+            });
         } catch ( e ) {}
     }
 
-    return selected;
+    return ret;
 }
 
 /**
@@ -134,23 +154,25 @@ function getSelectedIcons() {
  * @param   {Number} unicodeStart   The unicode char to start from
  * @returns {Function}
  */
-function getGlyphParser( unicodeStart ) {
+function getGlyphParser( root, unicodeStart ) {
     // Init externally selected icons
     // This will be used to filter out the icons by their name
     var selected = getSelectedIcons();
-    selected = selected && selected.length ? selected : null;
+    var hasSelection = selected && Object.keys( selected ).length;
 
-    if ( selected ) {
-        console.log( "%d selected icons", selected.length );
+    if ( hasSelection ) {
+        console.log( "%d selected icons", hasSelection );
     }
 
     return function parseGlyphObject( glyph, i ) {
-        var name;
+        var name, renamed, d;
+        var searchTerms = [];
 
         glyph = glyph.$;
+        d = glyph.d;
 
         // Has SVG path?
-        if ( !glyph.d ) {
+        if ( !d ) {
             return;
         }
 
@@ -160,18 +182,37 @@ function getGlyphParser( unicodeStart ) {
             name = glyph.unicode;
         }
 
+        // Init the variable with the current name
+        renamed = name;
+
+        // When a selection is available, let's analyze it to determine what's the renamed icon
+        if ( hasSelection ) {
+            renamed = selected[ glyph.unicode ];
+        }
+
+        d = new SvgPath( d.replace( /\r?\n/g, " " ) )
+            .scale( 1, -1 )
+            .translate( 0, +root.ascent )
+            .abs()
+            .round( 1 )
+            .toString();
+
+        // Create unique search terms
+        searchTerms.push( renamed || name );
+        if ( ( renamed || name ) !== name ) {
+            searchTerms.push( name );
+        }
+
         return {
-            css: name,
+            css: renamed || name,
             src: "custom_icons",
             code: unicodeStart + i,
-            selected: !( selected && selected.indexOf( name ) === -1 ),
+            selected: hasSelection ? !!renamed : true,
             svg: {
-                path: glyph.d,
+                path: d,
                 width: 1000 // FIXME
             },
-            search: [
-                name
-            ]
+            search: searchTerms
         };
     };
 }

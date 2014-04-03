@@ -8,6 +8,7 @@ var FONTELLO_HOST = "http://fontello.com/";
 var path = require( "path" );
 var fs = require( "fs" );
 var xml2js = require( "xml2js" );
+var ent = require( "ent" );
 var restler = require( "restler" );
 var AdmZip = require( "adm-zip" );
 var SvgPath = require( "svgpath" );
@@ -18,7 +19,10 @@ var stripJsonComments = require( "strip-json-comments" );
 var fontelloCfg = {};
 
 // Read SVG contents and parse it
-var svg = fs.readFileSync( path.resolve( __dirname, "../libs/webhostinghub-glyphs/WebHostingHub-Glyphs.svg" ), "utf8" );
+var svg = fs.readFileSync(
+    path.resolve( __dirname, "../libs/webhostinghub-glyphs/WebHostingHub-Glyphs.svg" ),
+    "utf8"
+);
 
 // Fix uni* glyph names
 svg = svg.replace( /glyph-name="uni[a-f0-9]{4}" unicode="(.+?)"/gi, "glyph-name=\"$1\" unicode=\"$1\"" );
@@ -166,14 +170,24 @@ function getGlyphParser( root, unicodeStart ) {
     // This will be used to filter out the icons by their name
     var selected = getSelectedIcons();
     var hasSelection = selected && Object.keys( selected ).length;
+    var iconNames = [];
+    var findAvailableName = function( name ) {
+        var i = 0;
+
+        do {
+            name = name + ( i || "" );
+            i++;
+        } while ( iconNames.indexOf( name ) > -1 );
+
+        return name;
+    };
 
     if ( hasSelection ) {
         console.log( "%d selected icons", hasSelection );
     }
 
     return function parseGlyphObject( glyph, i ) {
-        var name, renamed, d;
-        var searchTerms = [];
+        var name, d, unicodeAttr, isSelected;
 
         glyph = glyph.$;
         d = glyph.d;
@@ -183,20 +197,38 @@ function getGlyphParser( root, unicodeStart ) {
             return;
         }
 
+        // Has unicode attribute?
+        unicodeAttr = glyph.unicode;
+        if ( unicodeAttr ) {
+            // We'll need to decode HTML entities
+            unicodeAttr = ent.decode( unicodeAttr );
+        }
+
         // Uses glyph-name, unless it's so stupid.
         name = glyph[ "glyph-name" ];
         if ( /^uni[a-f0-9]{4}$/.test( name ) || name.indexOf( "NameMe" ) > -1 ) {
-            name = glyph.unicode;
+            name = unicodeAttr;
         }
 
-        // Init the variable with the current name
-        renamed = name;
+        // Add some index after the icon name
+        name = findAvailableName( name );
 
-        // When a selection is available, let's analyze it to determine what's the renamed icon
+        // Initially, the icon will be selected, but...
+        isSelected = true;
+
+        // ...when a selection is available, let's analyze it to determine if we're going to use.
+        // And, if so, what will be its name.
         if ( hasSelection ) {
-            renamed = selected[ glyph.unicode ];
+            name = selected[ name ];
+            name = name ? findAvailableName( name ) : false;
+
+            isSelected = !!name;
         }
 
+        // Add the current icon name in the list of used names
+        iconNames.push( name );
+
+        // Unshift and unmirror the icon
         d = new SvgPath( d.replace( /\r?\n/g, " " ) )
             .scale( 1, -1 )
             .translate( 0, +root.ascent )
@@ -204,22 +236,17 @@ function getGlyphParser( root, unicodeStart ) {
             .round( 1 )
             .toString();
 
-        // Create unique search terms
-        searchTerms.push( renamed || name );
-        if ( ( renamed || name ) !== name ) {
-            searchTerms.push( name );
-        }
-
+        // Finally build and return the complete icon object
         return {
-            css: renamed || name,
+            css: name,
             src: "custom_icons",
             code: unicodeStart + i,
-            selected: hasSelection ? !!renamed : true,
+            selected: isSelected,
             svg: {
                 path: d,
-                width: 1000 // FIXME
+                width: 1000
             },
-            search: searchTerms
+            search: [ name ]
         };
     };
 }

@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'webhostinghub-glyphs';
-  src: url('../font/webhostinghub-glyphs.eot?15063791');
-  src: url('../font/webhostinghub-glyphs.eot?15063791#iefix') format('embedded-opentype'),
-       url('../font/webhostinghub-glyphs.woff?15063791') format('woff'),
-       url('../font/webhostinghub-glyphs.ttf?15063791') format('truetype'),
-       url('../font/webhostinghub-glyphs.svg?15063791#webhostinghub-glyphs') format('svg');
+  src: url('../font/webhostinghub-glyphs.eot?17602326');
+  src: url('../font/webhostinghub-glyphs.eot?17602326#iefix') format('embedded-opentype'),
+       url('../font/webhostinghub-glyphs.woff?17602326') format('woff'),
+       url('../font/webhostinghub-glyphs.ttf?17602326') format('truetype'),
+       url('../font/webhostinghub-glyphs.svg?17602326#webhostinghub-glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -14,7 +14,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'webhostinghub-glyphs';
-    src: url('../font/webhostinghub-glyphs.svg?15063791#webhostinghub-glyphs') format('svg');
+    src: url('../font/webhostinghub-glyphs.svg?17602326#webhostinghub-glyphs') format('svg');
   }
 }
 */
@@ -308,7 +308,7 @@
 .icon-circlew:before { content: '\e0ff'; } /* '' */
 .icon-circlex:before { content: '\e100'; } /* '' */
 .icon-circlez:before { content: '\e101'; } /* '' */
-.icon-circlez:before { content: '\e102'; } /* '' */
+.icon-circlez1:before { content: '\e102'; } /* '' */
 .icon-creeper:before { content: '\e103'; } /* '' */
 .icon-minecraft:before { content: '\e104'; } /* '' */
 .icon-minecraftalt:before { content: '\e105'; } /* '' */
@@ -1556,7 +1556,7 @@
 .icon-usb2:before { content: '\e5df'; } /* '' */
 .icon-usb3:before { content: '\e5e0'; } /* '' */
 .icon-grid:before { content: '\e5e1'; } /* '' */
-.icon-details:before { content: '\e5e2'; } /* '' */
+.icon-details1:before { content: '\e5e2'; } /* '' */
 .icon-thumbnails:before { content: '\e5e3'; } /* '' */
 .icon-list:before { content: '\e5e4'; } /* '' */
 .icon-terminal:before { content: '\e5e5'; } /* '' */
@@ -1565,8 +1565,8 @@
 .icon-rar:before { content: '\e5e8'; } /* '' */
 .icon-tablet:before { content: '\e5e9'; } /* '' */
 .icon-keyboard:before { content: '\e5ea'; } /* '' */
-.icon-download:before { content: '\e5eb'; } /* '' */
-.icon-upload:before { content: '\e5ec'; } /* '' */
+.icon-download1:before { content: '\e5eb'; } /* '' */
+.icon-upload1:before { content: '\e5ec'; } /* '' */
 .icon-sync2:before { content: '\e5ed'; } /* '' */
 .icon-power:before { content: '\e5ee'; } /* '' */
 .icon-shutdown:before { content: '\e5ef'; } /* '' */
@@ -1647,7 +1647,7 @@
 .icon-path:before { content: '\e63a'; } /* '' */
 .icon-twitter:before { content: '\e63b'; } /* '' */
 .icon-pocket:before { content: '\e63c'; } /* '' */
-.icon-share:before { content: '\e63d'; } /* '' */
+.icon-share1:before { content: '\e63d'; } /* '' */
 .icon-newwindow:before { content: '\e63e'; } /* '' */
 .icon-closewindow:before { content: '\e63f'; } /* '' */
 .icon-newtab:before { content: '\e640'; } /* '' */
@@ -1669,7 +1669,7 @@
 .icon-movie4:before { content: '\e650'; } /* '' */
 .icon-headphones:before { content: '\e651'; } /* '' */
 .icon-music:before { content: '\e652'; } /* '' */
-.icon-fastforward:before { content: '\e653'; } /* '' */
+.icon-fastforward1:before { content: '\e653'; } /* '' */
 .icon-rewind:before { content: '\e654'; } /* '' */
 .icon-play:before { content: '\e655'; } /* '' */
 .icon-stop:before { content: '\e656'; } /* '' */
@@ -1722,7 +1722,7 @@
 .icon-selectionintersect:before { content: '\e685'; } /* '' */
 .icon-bucket:before { content: '\e686'; } /* '' */
 .icon-vector:before { content: '\e687'; } /* '' */
-.icon-edit:before { content: '\e688'; } /* '' */
+.icon-edit1:before { content: '\e688'; } /* '' */
 .icon-brush:before { content: '\e689'; } /* '' */
 .icon-palette:before { content: '\e68a'; } /* '' */
 .icon-book:before { content: '\e68b'; } /* '' */
@@ -1806,7 +1806,7 @@
 .icon-water:before { content: '\e6d9'; } /* '' */
 .icon-maps:before { content: '\e6da'; } /* '' */
 .icon-pin:before { content: '\e6db'; } /* '' */
-.icon-flag:before { content: '\e6dc'; } /* '' */
+.icon-flag1:before { content: '\e6dc'; } /* '' */
 .icon-placeios:before { content: '\e6dd'; } /* '' */
 .icon-temperature:before { content: '\e6de'; } /* '' */
 .icon-temperature2:before { content: '\e6df'; } /* '' */
@@ -1915,7 +1915,7 @@
 .icon-rubberstamp:before { content: '\e746'; } /* '' */
 .icon-qrcode:before { content: '\e747'; } /* '' */
 .icon-barcode:before { content: '\e748'; } /* '' */
-.icon-sale:before { content: '\e749'; } /* '' */
+.icon-sale1:before { content: '\e749'; } /* '' */
 .icon-bill:before { content: '\e74a'; } /* '' */
 .icon-creditcard:before { content: '\e74b'; } /* '' */
 .icon-factory:before { content: '\e74c'; } /* '' */
@@ -2010,14 +2010,14 @@
 .icon-controllersnes:before { content: '\e7a5'; } /* '' */
 .icon-joystickarcade:before { content: '\e7a6'; } /* '' */
 .icon-joystickatari:before { content: '\e7a7'; } /* '' */
-.icon-podium:before { content: '\e7a8'; } /* '' */
+.icon-podium1:before { content: '\e7a8'; } /* '' */
 .icon-trophy:before { content: '\e7a9'; } /* '' */
 .icon-die:before { content: '\e7aa'; } /* '' */
 .icon-boardgame:before { content: '\e7ab'; } /* '' */
 .icon-ghost:before { content: '\e7ac'; } /* '' */
 .icon-pacman:before { content: '\e7ad'; } /* '' */
 .icon-bomb:before { content: '\e7ae'; } /* '' */
-.icon-steam:before { content: '\e7af'; } /* '' */
+.icon-steam1:before { content: '\e7af'; } /* '' */
 .icon-starempty:before { content: '\e7b0'; } /* '' */
 .icon-starhalf:before { content: '\e7b1'; } /* '' */
 .icon-starfull:before { content: '\e7b2'; } /* '' */

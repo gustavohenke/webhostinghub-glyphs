@@ -61,7 +61,7 @@ A `.json` file must contain a single array, where each item is a valid icon name
 ```js
 [
     "home",
-    "search,
+    "search",
     "save",
     "rss"
 ]

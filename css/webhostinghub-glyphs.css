@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'webhostinghub-glyphs';
-  src: url('../font/webhostinghub-glyphs.eot?17602326');
-  src: url('../font/webhostinghub-glyphs.eot?17602326#iefix') format('embedded-opentype'),
-       url('../font/webhostinghub-glyphs.woff?17602326') format('woff'),
-       url('../font/webhostinghub-glyphs.ttf?17602326') format('truetype'),
-       url('../font/webhostinghub-glyphs.svg?17602326#webhostinghub-glyphs') format('svg');
+  src: url('../font/webhostinghub-glyphs.eot?64788475');
+  src: url('../font/webhostinghub-glyphs.eot?64788475#iefix') format('embedded-opentype'),
+       url('../font/webhostinghub-glyphs.woff?64788475') format('woff'),
+       url('../font/webhostinghub-glyphs.ttf?64788475') format('truetype'),
+       url('../font/webhostinghub-glyphs.svg?64788475#webhostinghub-glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -14,7 +14,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'webhostinghub-glyphs';
-    src: url('../font/webhostinghub-glyphs.svg?17602326#webhostinghub-glyphs') format('svg');
+    src: url('../font/webhostinghub-glyphs.svg?64788475#webhostinghub-glyphs') format('svg');
   }
 }
 */

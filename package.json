@@ -9,7 +9,11 @@
     "license": "MIT",
     "dependencies": {
         "adm-zip": "0.4.4",
+        "commander": "2.2.0",
+        "ent": "0.1.0",
         "restler": "3.2.0",
+        "strip-json-comments": "0.1.1",
+        "svgpath": "1.0.4",
         "xml2js": "0.4.1",
         "wrench": "1.5.8"
     },

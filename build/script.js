@@ -60,7 +60,7 @@ xml2js.parseString( svg, function( err, result ) {
         fs.unlinkSync( cfgFile );
 
         // Not a succesful request?
-        if ( response.statusCode >= 400 ) {
+        if ( id instanceof Error || response.statusCode >= 400 ) {
             console.error( "ERROR! " + id );
             return process.exit( 1 );
         }

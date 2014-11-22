@@ -150,7 +150,7 @@ function getSelectedIcons() {
  * @returns {Function}
  */
 function getGlyphParser( root ) {
-    var ent = require( "ent" );
+    var he = require( "he" );
     var SvgPath = require( "svgpath" );
 
     // Fontello uses ascent = 850, WHHGlyphs uses 819. This makes the font look disaligned.
@@ -199,7 +199,7 @@ function getGlyphParser( root ) {
         unicodeAttr = glyph.unicode;
         if ( unicodeAttr ) {
             // We'll need to decode HTML entities
-            unicodeAttr = ent.decode( unicodeAttr );
+            unicodeAttr = he.decode( unicodeAttr );
         }
 
         // Uses glyph-name, unless it's so stupid.
